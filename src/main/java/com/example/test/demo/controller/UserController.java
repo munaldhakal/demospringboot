@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.test.demo.dto.UserDto;
-import com.example.test.demo.model.User;
+import com.example.test.demo.response.UserResponse;
 import com.example.test.demo.service.UserService;
 
 /**
@@ -48,7 +48,7 @@ public class UserController {
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	public ResponseEntity<Object> getUser(@PathVariable Long id){
-		User user = userService.getUser(id);
+		UserResponse user = userService.getUser(id);
 		Map<Object, Object> responseMap = new HashMap<Object, Object>();
 		responseMap.put("response", user);
 		return new ResponseEntity<Object>(responseMap, HttpStatus.OK);

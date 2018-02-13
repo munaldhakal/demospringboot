@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.example.test.demo.dto.UserDto;
 import com.example.test.demo.model.User;
 import com.example.test.demo.repository.UserRepository;
+import com.example.test.demo.response.UserResponse;
 
 /**
  * <<Description Here>>
@@ -40,8 +41,14 @@ public class UserService {
 		user.setPhoneNumber(userDto.getPhoneNumber());
 		userRepository.save(user);
 	}
-	public User getUser(Long id) {
+	public UserResponse getUser(Long id) {
 		User user  = userRepository.getOne(id);
-		return user;
+		UserResponse userResponse=new UserResponse();
+		userResponse.setEmail(user.getEmail());
+		userResponse.setFirstName(user.getFirstName());
+		userResponse.setMiddleName(user.getMiddleName());
+		userResponse.setLastName(user.getLastName());
+		userResponse.setPhoneNumber(user.getPhoneNumber());
+		return userResponse;
 	}
 }
