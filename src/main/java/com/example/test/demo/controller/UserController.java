@@ -13,6 +13,7 @@
 package com.example.test.demo.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,14 @@ public class UserController {
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	public ResponseEntity<Object> getUser(@PathVariable Long id){
 		UserResponse user = userService.getUser(id);
+		Map<Object, Object> responseMap = new HashMap<Object, Object>();
+		responseMap.put("response", user);
+		return new ResponseEntity<Object>(responseMap, HttpStatus.OK);
+	}
+	@CrossOrigin(origins="Http:localhost:4200")
+	@RequestMapping(method=RequestMethod.GET)
+	public ResponseEntity<Object> getAllUsers(){
+		List<UserResponse> user=userService.getAllUsers();
 		Map<Object, Object> responseMap = new HashMap<Object, Object>();
 		responseMap.put("response", user);
 		return new ResponseEntity<Object>(responseMap, HttpStatus.OK);

@@ -12,6 +12,9 @@
  */
 package com.example.test.demo.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +52,26 @@ public class UserService {
 		userResponse.setMiddleName(user.getMiddleName());
 		userResponse.setLastName(user.getLastName());
 		userResponse.setPhoneNumber(user.getPhoneNumber());
+		return userResponse;
+	}
+	/**
+	 *<<Add description here>>
+	 * @return
+	 * @author
+	 * @since , Modified In: @version, By @author
+	 */
+	public List<UserResponse> getAllUsers() {
+		List<User> user=userRepository.findAll();
+		List<UserResponse> userResponse=new ArrayList<>();
+		for(User r: user) {
+			UserResponse ur =new UserResponse();
+			ur.setEmail(r.getEmail());
+			ur.setFirstName(r.getFirstName());
+			ur.setLastName(r.getLastName());
+			ur.setMiddleName(r.getMiddleName());
+			ur.setPhoneNumber(r.getPhoneNumber());
+			userResponse.add(ur);
+		}
 		return userResponse;
 	}
 }
