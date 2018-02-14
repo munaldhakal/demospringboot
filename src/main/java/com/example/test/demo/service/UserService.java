@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.example.test.demo.dto.UserDto;
@@ -30,7 +33,7 @@ import com.example.test.demo.response.UserResponse;
  * @since , 12 Feb 2018
  */
 @Service
-public class UserService {
+public class UserService{
 
 	@Autowired
 	UserRepository userRepository;
@@ -60,10 +63,22 @@ public class UserService {
 	 * @author
 	 * @since , Modified In: @version, By @author
 	 */
-	public List<UserResponse> getAllUsers() {
-		List<User> user=userRepository.findAll();
+	public Page<User> getAllUsers(Direction sort, int page,String search,int size) {
+				
+		if(search!=null) {
+			Page<User> user=userRepository.findByFirstName(search,new PageRequest(page, size, sort, "firstName"));
+			
+			if(user==null) {
+				throw new NullPointerException("No user found of firstname:"+search);
+			}
+			return user;
+		}
+		Page<User> user=(Page<User>) userRepository.findAll();
+		return user;
+	}
+	public List<UserResponse> getItems(Page<User> user) {
 		List<UserResponse> userResponse=new ArrayList<>();
-		for(User r: user) {
+		for(User r: user.getContent()) {
 			UserResponse ur =new UserResponse();
 			ur.setEmail(r.getEmail());
 			ur.setFirstName(r.getFirstName());
