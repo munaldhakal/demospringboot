@@ -57,7 +57,7 @@ public class UserController {
 		responseMap.put("response", user);
 		return new ResponseEntity<Object>(responseMap, HttpStatus.OK);
 	}
-	@CrossOrigin(origins="Http:localhost:4200")
+	@CrossOrigin(origins = "http://localhost:4200")
 	@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<Object> getAllUsers(){
 		List<UserResponse> user=userService.getAllUsers();
