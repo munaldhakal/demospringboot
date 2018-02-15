@@ -68,12 +68,11 @@ public class UserService{
 	 * @since , Modified In: @version, By @author
 	 */
 	public Map<Object, Object> getAllUsers(Direction sort, int page,String search,int size) {
-		LOG.debug("Search:"+search);
 		if(sort==null) {
 			sort=Direction.ASC;
 		}
 		
-		if(search!=null) {
+		if(search!=null && search!="") {
 			Page<User> user=userRepository.findByFirstName(search, new PageRequest(page,size,sort,"firstName"));
 			return getResponse(user);
 		}

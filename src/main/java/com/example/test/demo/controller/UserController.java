@@ -72,7 +72,6 @@ public class UserController {
 			@RequestParam(value = "page", required = false,defaultValue="0") int page,
 			@RequestParam(value = "size", required = false,defaultValue="5") int size)
 			{
-		System.out.println("Hello");
 		Map<Object, Object> responseMap=userService.getAllUsers(sort,page,search,size);
 		return new ResponseEntity<Object>(responseMap, HttpStatus.OK);
 	}
