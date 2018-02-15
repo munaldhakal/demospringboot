@@ -15,6 +15,7 @@ package com.example.test.demo.repository;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -37,7 +38,17 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	 * @author
 	 * @since , Modified In: @version, By @author
 	 */
-	Page<User> findByFirstName(String search,Pageable pageable);
+	List<User> findByFirstName(String search);
+
+	/**
+	 *<<Add description here>>
+	 * @param search
+	 * @param pageRequest
+	 * @return
+	 * @author
+	 * @since , Modified In: @version, By @author
+	 */
+	Page<User> findByFirstName(String search, Pageable pageable);
 
 
 }

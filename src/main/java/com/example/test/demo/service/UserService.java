@@ -13,8 +13,12 @@
 package com.example.test.demo.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,7 +38,7 @@ import com.example.test.demo.response.UserResponse;
  */
 @Service
 public class UserService{
-
+	private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 	@Autowired
 	UserRepository userRepository;
 	public void createUser(UserDto userDto) {
@@ -63,30 +67,37 @@ public class UserService{
 	 * @author
 	 * @since , Modified In: @version, By @author
 	 */
-	public Page<User> getAllUsers(Direction sort, int page,String search,int size) {
-				
+	public Map<Object, Object> getAllUsers(Direction sort, int page,String search,int size) {
+		LOG.debug("Search:"+search);
+		if(sort==null) {
+			sort=Direction.ASC;
+		}
+		
 		if(search!=null) {
-			Page<User> user=userRepository.findByFirstName(search,new PageRequest(page, size, sort, "firstName"));
-			
-			if(user==null) {
-				throw new NullPointerException("No user found of firstname:"+search);
-			}
-			return user;
+			Page<User> user=userRepository.findByFirstName(search, new PageRequest(page,size,sort,"firstName"));
+			return getResponse(user);
 		}
-		Page<User> user=(Page<User>) userRepository.findAll();
-		return user;
+		Page<User>user=userRepository.findAll(new PageRequest(page,size,sort,"firstName"));
+		return getResponse(user);		
 	}
-	public List<UserResponse> getItems(Page<User> user) {
+	public Map<Object, Object> getResponse(Page<User> user){
+		List<User> u=user.getContent();
 		List<UserResponse> userResponse=new ArrayList<>();
-		for(User r: user.getContent()) {
-			UserResponse ur =new UserResponse();
-			ur.setEmail(r.getEmail());
-			ur.setFirstName(r.getFirstName());
-			ur.setLastName(r.getLastName());
-			ur.setMiddleName(r.getMiddleName());
-			ur.setPhoneNumber(r.getPhoneNumber());
-			userResponse.add(ur);
+		for(User ur:u) {
+			UserResponse response=new UserResponse();
+			response.setFirstName(ur.getFirstName());
+			response.setEmail(ur.getEmail());
+			response.setLastName(ur.getLastName());
+			response.setMiddleName(ur.getMiddleName());
+			response.setPhoneNumber(ur.getPhoneNumber());
+			userResponse.add(response);
 		}
-		return userResponse;
+		Map<Object, Object> responseMap = new HashMap<Object, Object>();
+		responseMap.put("response", userResponse);
+		responseMap.put("noOfItems",user.getNumberOfElements());
+		responseMap.put("totalNoOfItems",user.getTotalElements());
+		responseMap.put("noOfPages",user.getTotalPages());
+		responseMap.put("pageNumber",user.getNumber());
+		return responseMap;
 	}
 }

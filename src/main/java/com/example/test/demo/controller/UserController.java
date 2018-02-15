@@ -15,8 +15,11 @@ package com.example.test.demo.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.validation.Valid;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,9 +32,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.test.demo.dto.UserDto;
-import com.example.test.demo.model.User;
 import com.example.test.demo.response.UserResponse;
 import com.example.test.demo.service.UserService;
+
+import io.swagger.annotations.ApiOperation;
 
 /**
  * <<Description Here>>
@@ -42,10 +46,9 @@ import com.example.test.demo.service.UserService;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-	
+	private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 	@Autowired
 	UserService userService;
-	
 	@CrossOrigin(origins = "http://localhost:4200")
 	@RequestMapping(method=RequestMethod.POST)
 	public ResponseEntity<Object> createUser(@RequestBody UserDto userDto){
@@ -61,20 +64,16 @@ public class UserController {
 		return new ResponseEntity<Object>(responseMap, HttpStatus.OK);
 	}
 	@CrossOrigin(origins = "http://localhost:4200")
-	@RequestMapping(method=RequestMethod.GET,  params= {"search","page","sort","size"})
+	@RequestMapping(method=RequestMethod.GET)
+	@ApiOperation(value = "Search with the appropriate values ")
 	public ResponseEntity<Object> getAllUsers(
+			@RequestParam(required = false,value = "search") String search,
 			@RequestParam(value = "sort", required = false) Direction sort,
-			@RequestParam(value = "page", required = false) int page,
-			@RequestParam(value = "size", required = false) int size,
-			@RequestParam(value = "search", required = false) String search){
-		Page<User> user=userService.getAllUsers(sort,page,search,size);
-		Map<Object, Object> responseMap = new HashMap<Object, Object>();
-		responseMap.put("response", user.getContent());
-		responseMap.put("noOfItems",user.getNumberOfElements());
-		responseMap.put("totalNoOfItems",user.getTotalElements());
-		responseMap.put("noOfPages",user.getTotalPages());
-		responseMap.put("pageNumber",user.getNumber());
-		
+			@RequestParam(value = "page", required = false,defaultValue="0") int page,
+			@RequestParam(value = "size", required = false,defaultValue="5") int size)
+			{
+		System.out.println("Hello");
+		Map<Object, Object> responseMap=userService.getAllUsers(sort,page,search,size);
 		return new ResponseEntity<Object>(responseMap, HttpStatus.OK);
 	}
 
